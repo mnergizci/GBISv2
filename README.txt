@@ -1,5 +1,13 @@
+This repository is temporary and will be moved to the NERC COMET GitHub (https://github.com/nerc-comet) in the near future (very soon).
+
+The study is currently under review at JGR: Solid Earth. Please cite the preprint as follows:
+Refining 3D Displacement Fields and Coseismic Slip Models of the 2023 Kahramanmaraş Earthquakes Using Subswath and Burst Overlap Interferometry (SBOI)
+Available at: https://essopenarchive.org/users/896634/articles/1272727-refining-3d-displacement-fields-and-coseismic-slip-models-of-the-2023-kahramanmara%C5%9F-earthquakes-using-subswath-and-burst-overlap-interferometry-sboi
 
 Under constructionn, the V2 coming sooon.....
+
+
+
 
 Geodetic Bayesian Inversion Software (GBIS)
 Software for the Bayesian inversion of geodetic data.
