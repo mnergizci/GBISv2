@@ -1,0 +1,373 @@
+% =========================================================================
+% Geodetic Bayesian Inversion Software (GBIS)
+% Software for the Bayesian inversion of geodetic data.
+% Copyright: Marco Bagnardi, 2018
+%
+% Email: gbis.software@gmail.com
+%
+% Reference: 
+% Bagnardi M. & Hooper A, (2018). 
+% Inversion of surface deformation data for rapid estimates of source 
+% parameters and uncertainties: A Bayesian approach. Geochemistry, 
+% Geophysics, Geosystems, 19. https://doi.org/10.1029/2018GC007585
+%
+% =========================================================================
+% Last update: 28 June, 2024
+
+% INPUT FILE
+
+%% Reference point and Area of interest
+geo.referencePoint = [37.5; 37.5];    % Longitude and Latitude in degrees for arbitrary reference point of local coordinates system [Lon; Lat;]
+geo.boundingBox = [35.75; 38.5; 38.75; 35.75;];  % Coordinates in degrees of upper left and lower right limits of area of interest [UL_Lon,UL_Lat,LR_Lon,LR_Lat]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% InSAR data
+% Make sure insarID is unique!
+
+insarID = 1;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/021D_20230105_20230306.msk.rng.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.025515;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 6550.230791;            % Variogram range in m
+
+insar{insarID}.nugget = 0.021833;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+insarID = 2;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/021D_20230105_20230306.msk.azi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/CSK20160614-20160625asc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.0078;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 7124.292;            % Variogram range in m
+
+insar{insarID}.nugget = 0.42;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2;  % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 3;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/021D_boi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/CSK20160614-20160625asc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.0000676;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 6128.412;            % Variogram range in m
+
+insar{insarID}.nugget = 0.000417;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2;  % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 4;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/014A_20230128_20230305.msk.rng.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.030337;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 5027.470577;            % Variogram range in m
+
+insar{insarID}.nugget = 0.033804;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 5;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/014A_20230128_20230305.msk.azi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.149422;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 5952.321081;            % Variogram range in m
+
+insar{insarID}.nugget = 0.470257;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 6;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/014A_boi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.001320;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 8630.483865;            % Variogram range in m
+
+insar{insarID}.nugget = 0.000439;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 7;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/116A_20230123_20230324.msk.rng.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.030337;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 5027.470577;            % Variogram range in m
+
+insar{insarID}.nugget = 0.033804;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 8;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/116A_20230123_20230324.msk.azi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.149422;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 5952.321081;            % Variogram range in m
+
+insar{insarID}.nugget =0.470257 ;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+insarID = 9;                            % InSAR dataset unique identifier
+
+insar{insarID}.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/TR_down_sparse/116A_boi.mat'; % Path to data file
+
+% insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
+
+insar{insarID}.wavelength = 0.056;      % Wavelength in m (e.g., Envisat/ERS/Sentinel: 0.056; CSK/TSX/TDX: 0.031)
+
+insar{insarID}.constOffset = 'y';       % Remove constant offset? 'y' or 'n'
+
+insar{insarID}.rampFlag = 'n';          % Remove linear ramp? 'y' or 'n'
+
+insar{insarID}.sillExp = 0.001320;       % Variogram sill (minus nugget) in m^2. Total sill = sillExp + nugget 
+
+insar{insarID}.range = 8630.483865;            % Variogram range in m
+
+insar{insarID}.nugget = 0.000439;          % Variogram nugget in m^2
+
+insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g., 1e-04 or 0.01^2) or 0 for no downsamping
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%% GPS data
+
+gps.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/GPS_data.txt';   % Path to GPS data file
+gps.weight = 1/1;    % Weight of GPS data vs. InSAR data in inversion (e.g., 10/1)
+
+%% Model parameters
+
+modelInput.nu = 0.25;     % Poisson's ratio (Shear modulus is set to 1)
+
+% Mogi 'M'
+%                             X       Y      Z      DV
+modelInput.mogi{1}.start = [    0;     0;   3000;    -1e6; ];      % starting model
+modelInput.mogi{1}.step =  [   50;    50;    100;    1e05; ];      % initial maximium step size
+modelInput.mogi{1}.lower = [-8000; -2000;    100;    -1e9; ];      % lower bounds on m
+modelInput.mogi{1}.upper = [ 8000;  9000;  10000;    -1e2; ];      % upper bounds on m
+
+% Rectangular dipping dike (Okada) 'D'
+%                            L       W      Z     Dip    Str      X       Y     Op
+modelInput.dike{1}.start = [ 7000;   5000;   500;  -75.0;   270;  10000;  -3000;  1.0];    % starting model
+modelInput.dike{1}.step =  [  100;    100;   100;     10;    10;    100;    100; 0.10];    % initial maximium step size
+modelInput.dike{1}.lower = [  100;    100;   100;  -89.9;   180;   3000;  -9000;  0.1];    % lower bounds on m
+modelInput.dike{1}.upper = [15000;  10000; 10000;   -0.1;   360;  15000;   3000; 10.0];    % upper bounds on m
+
+% Rectangular dipping dike (Okada) 'D'
+%                            L       W      Z     Dip    Str      X       Y     Op
+modelInput.dike{2}.start = [ 7000;   5000;   500;  -75.0;   270;   2000;   6000;  1.0];    % starting model
+modelInput.dike{2}.step =  [  100;    100;   100;     10;    10;    100;    100; 0.10];    % initial maximium step size
+modelInput.dike{2}.lower = [  100;    100;   100;  -89.9;   180;  -3000;   3000;  0.1];    % lower bounds on m
+modelInput.dike{2}.upper = [15000;  10000; 10000;   -0.1;   360;   3000;   9000; 10.0];    % upper bounds on m
+
+% Rectangular fault (Okada) 'F'
+%                                L         W       Z     Dip    Str            X             Y      SS       DS
+modelInput.fault{1}.start = [  45000;     14000;    0;  -75.0;   204;  -96793.075;   -93728.933;    1.0;     1.0];    % starting model
+modelInput.fault{1}.step =  [    100;       100;   1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{1}.lower = [  20000;    10000;    0;  -89.9;   190;      -96800;       -93800;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{1}.upper = [ 120000;    18000;    0;   -0.1;   210;      -96700;       -93700;   10.0;     7.0];    % upper bounds on m
+
+modelInput.fault{2}.start = [  20000;     14000;    0;  -75.0;   217;  -61319.420;   -23415.161;    1.0;     1.0];    % starting model
+modelInput.fault{2}.step =  [    100;       100;   1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{2}.lower = [  10000;    10000;    0;  -89.9;   200;      -61400;       -23500;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{2}.upper = [  40000;    18000;    0;   -0.1;   220;      -61300;       -23400;   10.0;     7.0];
+
+modelInput.fault{3}.start = [  20000;     14000;    0;  -75.0;   245;  -36927.163;    -2026.840;    1.0;     1.0];    % starting model
+modelInput.fault{3}.step =  [    100;       100;   1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{3}.lower = [  10000;    10000;    0;  -89.9;   240;      -37000;        -2100;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{3}.upper = [  30000;    18000;    0;   -0.1;   250;      -36900;        -2000;   10.0;     7.0];
+
+modelInput.fault{4}.start = [  30000;     14000;    0;  -75.0;   235;    -264.577;    21975.364;    1.0;     1.0];    % starting model
+modelInput.fault{4}.step =  [   100;       100;    1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{4}.lower = [  20000;    10000;    0;  -89.9;   230;        -300;        21900;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{4}.upper = [  60000;    18000;    0;   -0.1;   240;        -200;        22000;   10.0;     7.0];
+
+modelInput.fault{5}.start = [ 30000;     14000;    0;  -75.0;   245;   59949.701;    55159.598;    1.0;     1.0];    % starting model
+modelInput.fault{5}.step =  [   100;       100;    1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{5}.lower = [  25000;    10000;    0;  -89.9;   240;       59900;        55100;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{5}.upper = [  75000;    18000;    0;   -0.1;   250;       60000;        55200;   10.0;     7.0];
+
+modelInput.fault{6}.start = [ 10000;     14000;    0;  -75.0;   205;  -29030.204;    -7551.908;    1.0;     1.0];    % starting model
+modelInput.fault{6}.step =  [   100;       100;   1;      1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{6}.lower = [   7500;    10000;    0;  -89.9;   200;      -29100;        -7600;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{6}.upper = [  25000;    18000;    0;   -0.1;   210;      -29000;        -7500;   10.0;     7.0];
+
+modelInput.fault{7}.start = [ 10000;     14000;    0;   -60;    80;  -74800.832;    59333.741;    1.0;     1.0];    % starting model
+modelInput.fault{7}.step =  [   100;       100;   1;     1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{7}.lower = [  5000;    10000;    0; -89.9;    75;      -74850;        59300;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{7}.upper = [  32000;    18000;    0;  -0.1;    85;      -74750;        59400;   10.0;     7.0];
+
+modelInput.fault{8}.start = [ 40000;     14000;    0;   -60;   100;  -25200.218;    58086.518;    1.0;     1.0];    % starting model
+modelInput.fault{8}.step =  [   100;       100;   1;     1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{8}.lower = [  35000;    10000;    0; -89.9;    95;      -25250;        58000;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{8}.upper = [  65000;    18000;    0;  -0.1;   105;      -25150;        58100;   10.0;     7.0];
+
+modelInput.fault{9}.start = [ 45000;     14000;    0; -75.0;   240;   29167.165;    65980.528;    1.0;     1.0];    % starting model
+modelInput.fault{9}.step =  [   100;       100;   1;     1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{9}.lower = [  40000;    10000;    0; -89.9;   235;       29100;        65900;  -10.0;    -7.0];    % lower bounds on m
+modelInput.fault{9}.upper = [  50000;    18000;    0;  -0.1;   245;       29200;        66000;   10.0;     7.0];
+
+modelInput.fault{10}.start = [ 15000;     14000;    0; -75.0;   2;  -68621.147;    52896.694;    1.0;     1.0];    % starting model
+modelInput.fault{10}.step =  [   100;       100;   1;     1;     1;          20;           20;   0.01;    0.01];    % initial maximium step size
+modelInput.fault{10}.lower = [  10000;    10000;    0; -89.9;   0;      -68700;        52800;  -5.0;    -7.0];    % lower bounds on m
+modelInput.fault{10}.upper = [  18500;    18000;    0;  -0.1;   5;      -68600;        52900;   5.0;     7.0];
+
+
+% McTigue 'T'
+%                                X       Y      Z     R   DP/mu
+modelInput.mctigue{1}.start = [ -7000;   4000;  3000; 1000; -10e-04; ];  % starting model
+modelInput.mctigue{1}.step =  [   100;    100;    50;    0;   1e-04; ];  % initial maximium step size
+modelInput.mctigue{1}.lower = [-20000; -20000;   100; 1000;   -10e3; ];  % lower bounds on m
+modelInput.mctigue{1}.upper = [ 20000;  20000; 10000; 1000;    10e3; ];  % upper bounds on m
+
+% Penny-shaped crack 'P'
+%                              X       Y      Z     R    DP/mu
+modelInput.penny{1}.start = [     0;      0;  2000; 1000; -1e-03; ];    % starting model
+modelInput.penny{1}.step =  [   100;    100;    50;  100;  1e-04; ];    % initial maximium step size
+modelInput.penny{1}.lower = [-20000; -20000;   100;  100;   -1e3; ];    % lower bounds on m
+modelInput.penny{1}.upper = [ 20000;  20000; 30000; 2000;    1e3; ];    % upper bounds on m
+
+% Yang 'Y'
+%                             X       Y      Z      a     a/b  Str    Pln    DP/mu
+modelInput.yang{1}.start = [     0;      0;  5000;   500;    0.5; 270; -89.9; -1e-03;];    % starting model
+modelInput.yang{1}.step =  [   100;    100;    50;    50;    .01;   1;     1;  1e-04;];    % initial maximium step size
+modelInput.yang{1}.lower = [-20000; -20000;  1000;     1;   0.01;   1; -89.9;   -1e3;];    % lower bounds on m
+modelInput.yang{1}.upper = [ 20000;  20000; 30000; 20000;   0.99; 359;  -0.1;    1e3;];    % upper bounds on m
+
+% Horizontal rectangular sill (Okada) 'S'
+%                            L     W      Z   Str     X      Y    Op
+modelInput.sill{1}.start = [ 2000; 2000;  1100;  180;-2000;  2000;   -1.0;]; % starting model
+modelInput.sill{1}.step  = [   50;   50;    50;    1;  100;   100;    0.01];  % initial maximium step size
+modelInput.sill{1}.lower = [  300;  300;   100;    1;-20000; -20000;  -50];  % lower bounds on m
+modelInput.sill{1}.upper = [10000;10000; 10000;  359; 20000;  20000; -0.01];  % upper bounds on m
+
+% Hinged double dike 'H'
+%                           X_1     Y_1     L_1     W_1     Z_1    Dip_1     Op_1    W_2   Dip_2  Op_2  Strike
+modelInput.hing{1}.start = [   100;    100;   1000;   1000;     10;   -85.0;    0.5;  1000;   -10.0;  0.5;    30]; % starting model
+modelInput.hing{1}.step =  [   100;    100;    100;    100;    100;       1;   0.01;   100;       1; 0.01;     1]; % initial maximium step size
+modelInput.hing{1}.lower = [  -200;   -200;    100;    100;      1;   -89.9;   0.01;   100;   -89.9; 0.01;     1]; % lower bounds on m
+modelInput.hing{1}.upper = [   200;    200;   7000;   7000;    200;    -0.1;   10.0;  9000;   -0.01; 10.0;   359]; % upper bounds on m
+
+% Multi-patch rectangular dipping dislocation (Okada) 'Z'
+% Example allowing Opening and SS only
+%
+
+modelInput.mdisloc{1}.ss_ds_op=[true,true,false]; % allow for strike-slip and/or dip-slip and/or opening
+modelInput.mdisloc{1}.patchfile = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/m_gbis.mat'; % file containing dike patches in disloc format (10 x n)
+mfunc=load(modelInput.mdisloc{1}.patchfile);
+npatch=size(mfunc.m,2);
+clear mfunc
+modelInput.mdisloc{1}.start = zeros(npatch*2,1);      % starting model (opening on each patch)
+modelInput.mdisloc{1}.step =  ones(npatch*2,1)*0.01;  % initial maximium step size
+modelInput.mdisloc{1}.lower = [ones(npatch,1)*-10;zeros(npatch,1)];      % lower bounds on m
+modelInput.mdisloc{1}.upper = [zeros(npatch,1);ones(npatch,1)*10.0]; % upper bounds on m
+
+% point Compound Dislocation Model (pCDM) 'N'
+%                             X       Y       Z     W_X      W_Y     W_Z    Dv_X     Dv_Y    Dv_Z 
+modelInput.pcdm{1}.start = [  3000;   6000;   6000;      0;      0;      0;    8e6;    8e6;     3e6; ]; % starting model
+modelInput.pcdm{1}.step =  [   100;    100;    100;      1;      1;      1;    1e3;    1e3;     1e3; ]; % initial maximum step size
+modelInput.pcdm{1}.lower = [     0;      0;   1000;    -30;    -30;    -30;    0.1;    0.1;     0.1; ]; % lower bounds
+modelInput.pcdm{1}.upper = [  6000;  10000;  15000;     30;     30;     30;    2e7;    2e7;     2e7; ]; % upper bounds
+
+% Compound Dislocation Model (CDM) 'K'
+%                             X       Y       Z     W_X      W_Y     W_Z    a_X     a_Y      a_Z      Op 
+modelInput.cdm{1}.start = [  3000;   6000;   6000;    -25;    -90;     -5;  1.5e3;    500;     600;    2.0]; % starting model
+modelInput.cdm{1}.step =  [    20;     20;     50;    0.5;    0.5;    0.5;     20;     20;      20;   0.01]; % initial maximum step size
+modelInput.cdm{1}.lower = [  2000;   5000;   4000;    -90;   -180;    -90;    500;    200;     200;      0]; % lower bounds
+modelInput.cdm{1}.upper = [  4000;   7000;   9000;     90;      0;     90;    3e3;   1000;     1e3;      5]; % upper bounds
+
+% finite Ellipsoidal Cavity Model (fECM) 'E'
+modelInput.mu = 40e9;     % shear modulus
+%                             X       Y       Z     W_X      W_Y     W_Z    a_X     a_Y      a_Z      P 
+modelInput.fecm{1}.start = [  3647;   7207;   6339;    2.5;   -2.1;   -7.6;   1000;   1000;    2000;    1e7]; % starting model
+modelInput.fecm{1}.step =  [    20;     20;     50;    0.5;    0.5;    0.5;     10;     10;      10;    1e3]; % initial maximum step size
+modelInput.fecm{1}.lower = [  3647;   7207;   6339;    2.5;   -2.1;   -7.6;    100;    100;     100;      0]; % lower bounds
+modelInput.fecm{1}.upper = [  3647;   7207;   6339;    2.5;   -2.1;   -7.6;   1800;   1500;    6000;    2e7]; % upper bounds

@@ -3,6 +3,8 @@
 addpath(genpath('/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/'));
 
 testGBISPath
-%invResFile='/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/TR_sparse_exercise_empr/invert_1_2_3_4_5_6_7_8_9_Z/';
+GBISrun('TR_sparse_exercise_empr.inp',[3,6,9],'n','Z',8e5, 'n', 'n', 'y');
+plot_grind('invert_3_6_9_Z','/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/sill_nugget_range/TR_sparse_exercise_empr');
 invResFile='/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/sill_nugget_range/TR_sparse_exercise_empr/invert_3_6_9_Z'
+generateFinalReport(invResFile,100000);
 generate_plots(invResFile,100000);
