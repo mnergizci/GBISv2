@@ -129,7 +129,7 @@ fclose(inputFileID);
 [inputFile.path, inputFile.name, inputFile.ext] = fileparts(inputFileName); % Extract name
 outputDir = inputFile.name; % Name output directory as input file name
 
-   % InSAR + GPS
+% InSAR + GPS
 if gpsDataFlag == 'y' && ~isempty(insarDataCode)
     
     % Add InSAR dataset ID
@@ -139,22 +139,8 @@ if gpsDataFlag == 'y' && ~isempty(insarDataCode)
     
     % Add GPS
     saveName = ['invert_',strjoin(insarDataNames, '_'),'_GPS'];
-    
-    % Add models
-    for i = 1:length(modelCode)
-        saveName = [saveName,'_',modelCode(i)];
-    end
-    
-    % Create output directories
-    outputDir = [outputDir,'/',saveName];
-    disp(['Output directory: ', outputDir])
-    mkdir(outputDir)
-    mkdir([outputDir,'/Figures']) % Create directory for Figures
-    
-    % Add .mat extension
-    saveName = [saveName,'.mat'];
-
-    % InSAR only
+  
+% InSAR only
 elseif gpsDataFlag == 'n' && ~isempty(insarDataCode)
     
     % Add InSAR dataset ID
@@ -164,40 +150,26 @@ elseif gpsDataFlag == 'n' && ~isempty(insarDataCode)
 
     saveName = ['invert_',strjoin(insarDataNames, '_')];
     
-    % Add models
-    for i = 1:length(modelCode)
-        saveName = [saveName,'_',modelCode(i)];
-    end
-    
-    % Create output directories
-    outputDir = [outputDir,'/',saveName];
-    disp(['Output directory: ', outputDir])
-    mkdir(outputDir)
-    mkdir([outputDir,'/Figures']) % Create directory for Figures
-    
-    % Add .mat extension
-    saveName = [saveName,'.mat'];
-    
-    % GPS only
+% GPS only
 elseif gpsDataFlag == 'y' && isempty(insarDataCode)
     
     % Add GPS
     saveName = ['invert_GPS'];
-    
-    % Add models
-    for i = 1:length(modelCode)
-        saveName = [saveName,'_',modelCode(i)];
-    end
-            
-    % Create output directories
-    outputDir = [outputDir,'/',saveName];
-    disp(['Output directory: ', outputDir])
-    mkdir(outputDir)
-    mkdir([outputDir,'/Figures']) % Create directory for Figures
-    
-    % Add .mat extension
-    saveName = [saveName,'.mat'];
 end
+
+% Add models
+for i = 1:length(modelCode)
+    saveName = [saveName,'_',modelCode(i)];
+end
+
+% Create output directories
+outputDir = fullfile(outputDir, saveName);
+disp(['Output directory: ', outputDir])
+mkdir(outputDir)
+mkdir([outputDir,'/Figures']) % Create directory for Figures
+
+% Add .mat extension
+saveName = [saveName,'.mat'];
 
 %% Initialise variables
 
