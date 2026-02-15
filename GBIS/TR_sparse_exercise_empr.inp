@@ -220,7 +220,7 @@ gps.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/GPS_data.txt';   % P
 gps.weight = 1/1;    % Weight of GPS data vs. InSAR data in inversion (e.g., 10/1)
 
 %% ENU data
-enu.dataPath = 'D:/1.Phd_project/1.GBISv2/GBIS/example/downsampled_ENU.txt';   % Path to ENU data file
+enu.dataPath = 'example/downsampled_ENU.txt';   % Path to ENU data file
 
 %% Model parameters
 modelInput.nu = 0.25;     % Poisson's ratio (Shear modulus is set to 1)
@@ -300,7 +300,7 @@ modelInput.hing{1}.upper = [   200;    200;   7000;   7000;    200;    -0.1;   1
 %
 
 modelInput.mdisloc{1}.ss_ds_op=[true,true,false]; % allow for strike-slip and/or dip-slip and/or opening
-modelInput.mdisloc{1}.patchfile = 'D:\1.Phd_project\1.GBISv2\GBIS\m_total_mode1.mat'; % file containing dike patches in disloc format (10 x n)
+modelInput.mdisloc{1}.patchfile = 'm_total_mode4.mat'; % file containing dike patches in disloc format (10 x n)
 mfunc=load(modelInput.mdisloc{1}.patchfile);
 npatch=size(mfunc.m,2);
 clear mfunc

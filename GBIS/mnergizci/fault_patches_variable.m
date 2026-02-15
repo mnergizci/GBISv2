@@ -129,7 +129,7 @@ function fault_patches_generator(filename, orig, mode)
     end
     
     
-        % Display dip, strike, total length, and total width, and patch sizes if mode is 1
+    % Display dip, strike, total length, and total width, and patch sizes if mode is 1
     if mode == 2
         m= [];
     
@@ -189,63 +189,74 @@ function fault_patches_generator(filename, orig, mode)
         drawmodel(m)
         axis;
     end
-    if mode == 3
-        m= [];
     
+    % --- Mode 4: constant patches using depth + size_patches from fault_inf
+    if mode == 4
+        m = [];
+
         for i = 1:fault_segment
-            dip = patch(i).dip * pi / 180; % Convert to radians
-            strike = patch(i).strike * pi / 180; % Convert to radians
-            total_length = patch(i).length;
-            total_width = patch(i).depth/sin(-1*dip);
+            dip    = patch(i).dip    * pi / 180; % radians
+            strike = patch(i).strike * pi / 180; % radians
+
+            total_length = patch(i).length;  % m
+            total_width  = patch(i).depth / sin(-1*dip);  % keep your convention
+
             X_cent = patch(i).X;
             Y_cent = patch(i).Y;
 
+            % constant patch size from file (already meters in your parsing)
+            ps_m = patch(i).size_patches;  % m
 
-            init_patch_sizes = [2, 4, 6, 8, 10]; % Initial patch sizes in km
-            init_patch_with_dip=init_patch_sizes./sin(-1*dip)
-            cumulative_sum = cumsum(init_patch_with_dip); % [1, 4, 10, 20]
-            cum_top_patch = [0, cumulative_sum(1:end-1)]; % [0, 1, 4, 10]
-    
+            % along-dip patch size using your convention
+            ps_m_dip = ps_m / sin(-1*dip);
+
+            % number of patches
+            patch_num_strike   = round(total_length / ps_m);
+            patch_size_strike  = total_length / patch_num_strike;
+
+            patch_num_dip = round(total_width / ps_m_dip);
+            if patch_num_dip < 1
+                patch_num_dip = 1;
+            end
+
             disp(' ');
             disp(['Fault Segment-', num2str(i)]);
             disp(['Dip: ', num2str(dip)]);
             disp(['Strike: ', num2str(strike)]);
             disp(['Total Length: ', num2str(total_length)]);
             disp(['Total Width: ', num2str(total_width)]);
-                
-            % Compute patch sizes
-            for j = 1:length(init_patch_sizes)
-                ps = init_patch_sizes(j);
-                ps_m = ps * 1000; % Convert to meters
-                ps_m_dip=ps_m/sin(-1*dip);
-                patch_num_strike = round(total_length / ps_m);
-                patch_size_strike = total_length / patch_num_strike;
+            disp(['Const patch size strike: ', num2str(patch_size_strike), ...
+                  ';   Const patch size dip: ', num2str(ps_m_dip)]);
+            disp(['# strike patches: ', num2str(patch_num_strike), ...
+                  ';   # dip rows: ', num2str(patch_num_dip)]);
 
-    
-                disp(['Patch size along strike: ', num2str(patch_size_strike), ';   Patch size along dip: ', num2str(ps_m_dip)]);
-                    
-                % Create the meshgrid
-                [AS, ~] = meshgrid([0:patch_size_strike:(patch_num_strike-1)*patch_size_strike] - (patch_num_strike-1)*patch_size_strike/2, [0]);
-                UD = ones(size(AS)) * cum_top_patch(j) * 1000; % Fill UD with the constant value
-                
+            % strike coordinate vector (same style as yours)
+            AS = [0:patch_size_strike:(patch_num_strike-1)*patch_size_strike] ...
+                 - (patch_num_strike-1)*patch_size_strike/2;
+
+            % build rows downdip
+            for k = 1:patch_num_dip
+                % top-of-row distance downdip (consistent with your "cum_top_patch" usage)
+                UD = ones(1, patch_num_strike) * ((k-1) * ps_m_dip);
+
                 m_out = zeros(10, patch_num_strike);
-                m_out(1,:) = repmat(patch_size_strike,1,patch_num_strike);
-                m_out(2,:) = repmat(ps_m_dip,1,patch_num_strike);
-                m_out(3,:) = repmat(0,1,patch_num_strike) - UD*sin(dip);
-                m_out(4,:) = repmat(dip*180/pi,1,patch_num_strike); % Convert back to degrees
-                m_out(5,:) = repmat(strike*180/pi,1,patch_num_strike); % Convert back to degrees
+                m_out(1,:) = repmat(patch_size_strike, 1, patch_num_strike);
+                m_out(2,:) = repmat(ps_m_dip,         1, patch_num_strike);
+                m_out(3,:) = repmat(0, 1, patch_num_strike) - UD*sin(dip); % keep your convention
+                m_out(4,:) = repmat(dip*180/pi,       1, patch_num_strike);
+                m_out(5,:) = repmat(strike*180/pi,    1, patch_num_strike);
                 m_out(6,:) = AS*sin(strike) - UD*cos(strike)*cos(dip) + X_cent;
                 m_out(7,:) = AS*cos(strike) + UD*sin(strike)*cos(dip) + Y_cent;
+
                 m = [m, m_out];
             end
         end
 
-        % Save the m_total variable as a .mat file
-        save('m_total_mode3.mat', 'm');
-        
-        % Plotting
+        save('m_total_mode4.mat', 'm');
+
         figure
         drawmodel(m)
         axis;
     end
+
 end
