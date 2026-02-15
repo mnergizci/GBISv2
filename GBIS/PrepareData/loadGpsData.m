@@ -1,4 +1,4 @@
-function [gps, obsGps, nObsGps] = loadGpsData(gps, geo)
+function [gps, obsGps, nObsGps] = loadGpsData(gps, geo, gpsplot, enuplot)
 
 % Function to ingest GPS data from text files
 %
@@ -30,6 +30,14 @@ function [gps, obsGps, nObsGps] = loadGpsData(gps, geo)
 % =========================================================================
 % Last update: 8 August, 2018
 
+% ---- Default plotting arguments ----
+if nargin < 4 || isempty(gpsplot)
+    gpsplot = false;
+end
+
+if nargin < 5 || isempty(enuplot)
+    enuplot = false;
+end
 
 global outputDir  % Set global variables
 
@@ -46,31 +54,34 @@ obsGps = llh2local([gps.ll'; zeros(1,nGps)], geo.referencePoint)*1000; % Convert
 obsGps = [obsGps; zeros(1,size(obsGps,2))]; % Add zeros to third column of observation matrix
 nObsGps = size(obsGps,2); % Determine number of entries in GPS observation matrix
 
-% Display Gps vectors
-obsGps(:,end+1) = [max(obsGps(1,:))+5000; min(obsGps(2,:))-5000; 0]; % add coordinates of legend
-scalebar = abs(round(max(gps.displacements(:))/3,3));
-gps.displacements(:,end+1) = [-scalebar 0 0]; % add displacements for legend
+if gpsplot
+    % Display Gps vectors
+    obsGps(:,end+1) = [max(obsGps(1,:))+5000; min(obsGps(2,:))-5000; 0]; % add coordinates of legend
+    scalebar = abs(round(max(gps.displacements(:))/3,3));
+    gps.displacements(:,end+1) = [-scalebar 0 0]; % add displacements for legend
+    
+    figure
+    quiver(obsGps(1,:), obsGps(2,:), gps.displacements(1,:), gps.displacements(2,:), 1, 'Color', 'k', 'LineWidth', 1, 'MaxHeadSize', 0.03, 'Marker', 's')
+    axis equal; 
+    ax = gca;
+    grid on
+    ax.Layer = 'top';
+    ax.Box = 'on';
+    ax.LineWidth = 1.5;
+    ax.GridLineStyle = '--';
+    xlabel('X distance from local origin (m)')
+    ylabel('Y distance from local origin (m)')
+    title('GPS horizontal displacements')
+    xlim([min(obsGps(1,:))-10000 max(obsGps(1,:))+10000]);
+    ylim([min(obsGps(2,:))-10000 max(obsGps(2,:))+10000]);
+    text(obsGps(1,end),obsGps(2,end)-2000,[num2str(scalebar*1000),' mm'])
+    drawnow
+    saveas(gcf,[outputDir,'/Figures/GPS_displacements.png'])
+    obsGps(:,end) = []; % remove coordinates of legend
+    gps.displacements(:,end) = []; % remove displacements for legend
+end
 
-figure
-quiver(obsGps(1,:), obsGps(2,:), gps.displacements(1,:), gps.displacements(2,:), 1, 'Color', 'k', 'LineWidth', 1, 'MaxHeadSize', 0.03, 'Marker', 's')
-axis equal; 
-ax = gca;
-grid on
-ax.Layer = 'top';
-ax.Box = 'on';
-ax.LineWidth = 1.5;
-ax.GridLineStyle = '--';
-xlabel('X distance from local origin (m)')
-ylabel('Y distance from local origin (m)')
-title('GPS horizontal displacements')
-xlim([min(obsGps(1,:))-10000 max(obsGps(1,:))+10000]);
-ylim([min(obsGps(2,:))-10000 max(obsGps(2,:))+10000]);
-text(obsGps(1,end),obsGps(2,end)-2000,[num2str(scalebar*1000),' mm'])
-drawnow
-saveas(gcf,[outputDir,'/Figures/GPS_displacements.png'])
 
-obsGps(:,end) = []; % remove coordinates of legend
-gps.displacements(:,end) = []; % remove displacements for legend
 
 
 

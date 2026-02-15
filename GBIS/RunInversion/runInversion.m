@@ -1,4 +1,4 @@
-function results = runInversion(geo, gps, insar, invpar, model, modelInput, obs, nObs)
+function results = runInversion(geo, gps, enu, insar, invpar, model, modelInput, obs, nObs)
 
 % Function that runs the MCMC Bayesian inversion
 %
@@ -268,6 +268,34 @@ while iKeep < invpar.nRuns  % While number of iterations is < than number of run
         end
     end
     
+    %% Calculate ENU residuals (treated like GPS-style point data)
+    if exist('enu','var') && ~isempty(enu)
+        for j = 1:length(enu)
+            if ~isempty(enu{j})
+                U = UTot(1:3, enu{1}.ix);
+    
+                % If you are using modelinsarID coupling, only add if appropriate.
+                % Usually for GPS/ENU you should NOT index Uinsar by j (j is epoch),
+                % so keep this disabled unless you know you want it.
+                % if ~isempty(Uinsar{j})
+                %     U = U + Uinsar{j}(1:3, enu{1}.ix);
+                % end
+    
+                rEnu = U - enu{j}.displacements(1:3,:);     % 3 x nSites residuals
+                nonanix = ~isnan(rEnu(:));
+    
+                % Weight (optional, match GPS behavior)
+                if ~isfield(enu{j}, 'weight') || isempty(enu{j}.weight)
+                    enu{j}.weight = 1;
+                end
+    
+                resExp = resExp + rEnu(nonanix)' * ...
+                    enu{j}.invCov(nonanix, nonanix) * ...
+                    rEnu(nonanix) * enu{j}.weight;
+            end
+        end
+    end
+
     %% Continue inversion ...
     
     if setHyperParameter == 1
@@ -354,7 +382,7 @@ while iKeep < invpar.nRuns  % While number of iterations is < than number of run
             
             % Save results to temporary file for insepction during
             % inversion
-            save([outputDir,'/temporary.mat'], 'geo', 'mKeep', 'PKeep', 'model', 'gps', 'insar', 'invpar', 'geo', 'modelInput','-v7.3');
+            save([outputDir,'/temporary.mat'], 'geo', 'mKeep', 'PKeep', 'model', 'gps', 'enu', 'insar', 'invpar', 'geo', 'modelInput','-v7.3');
             
             % Display current optimal model parameters on screen
             for i=1:length(invpar.model)
@@ -476,8 +504,6 @@ while iKeep < invpar.nRuns  % While number of iterations is < than number of run
             end
         end
     end
-    
-    
     
     if sensitivityTest > 0  % Perform sensitivity test (no models are kept during this phase!)
         randomStep = zeros(nModel,1);

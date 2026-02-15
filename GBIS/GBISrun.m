@@ -1,11 +1,11 @@
-function [] = GBISrun(inputFileName, insarDataCode, gpsDataFlag, modelCode, nRuns, skipSimulatedAnnealing, useExistingInsar, restartFlag)
+function [] = GBISrun(inputFileName, insarDataCode, gpsDataFlag, enuDataFlag, modelCode, nRuns, skipSimulatedAnnealing, useExistingInsar, restartFlag)
 
 %%  Geodetic Bayesian Inversion Software (GBIS)
 %   Software for the Bayesian inversion of geodetic data.
 %   Copyright: Marco Bagnardi, 2018
 %
 %%  =========================================================================
-%   Usage: GBISrun(inputFileName, insarDataCode, gpsDataFlag, modelCode, nRuns, skipSimulatedAnnealing, useExistingInsar, restartFlag)
+%   Usage: GBISrun(inputFileName, insarDataCode, gpsDataFlag, enuDataFlag, modelCode, nRuns, skipSimulatedAnnealing, useExistingInsar, restartFlag)
 %
 %   inputFileName:  name and extension of input file (e.g., 'VolcanoExercise.inp')
 %
@@ -14,6 +14,7 @@ function [] = GBISrun(inputFileName, insarDataCode, gpsDataFlag, modelCode, nRun
 %                   Leave empty (e.g.,[]) if no InSAR data.
 %
 %   gpsDataFlag:    'y' to use GPS data, 'n' to not use GPS data
+%   enuDataFlag:    'y' to use ENU data decomposed from SAR/InSAR
 %
 %   modelCode:      select forward models to use;
 %                   'M' for Mogi source (point source, [Mogi, 1958])
@@ -88,8 +89,10 @@ if nargin < 8
 end
 
 %% Start timer and initialise global variables
-clc % Clean screen
-tic % Start timer
+clc                % Clear command window
+close all          % Close all figure windows
+tic                % Start timer
+
 
 clear  outputDir  % Clear global variables
 global outputDir  % Set global variables
@@ -126,35 +129,30 @@ fclose(inputFileID);
 
 %% Create output directories and output file name
 
-[inputFile.path, inputFile.name, inputFile.ext] = fileparts(inputFileName); % Extract name
-outputDir = inputFile.name; % Name output directory as input file name
+[~, baseName, ~] = fileparts(inputFileName);
+outputDir = baseName;
+
+hasGPS   = strcmpi(gpsDataFlag,'y');
+hasENU   = strcmpi(enuDataFlag,'y');
+hasInSAR = ~isempty(insarDataCode);
+
+if hasInSAR
+    insarDataNames = arrayfun(@num2str, insarDataCode, 'UniformOutput', false);
+end
 
 % InSAR + GPS
-if gpsDataFlag == 'y' && ~isempty(insarDataCode)
-    
-    % Add InSAR dataset ID
-    for i = 1:length(insarDataCode)
-        insarDataNames{i} = num2str(insarDataCode(i));
-    end
-    
-    % Add GPS
-    saveName = ['invert_',strjoin(insarDataNames, '_'),'_GPS'];
-  
-% InSAR only
-elseif gpsDataFlag == 'n' && ~isempty(insarDataCode)
-    
-    % Add InSAR dataset ID
-    for i = 1:length(insarDataCode)
-        insarDataNames{i} = num2str(insarDataCode(i));
-    end
-
-    saveName = ['invert_',strjoin(insarDataNames, '_')];
-    
-% GPS only
-elseif gpsDataFlag == 'y' && isempty(insarDataCode)
-    
-    % Add GPS
-    saveName = ['invert_GPS'];
+if hasGPS && hasInSAR
+    saveName = ['invert_', strjoin(insarDataNames,'_'), '_GPS'];
+% InSAR
+elseif ~hasGPS && hasInSAR
+    saveName = ['invert_', strjoin(insarDataNames,'_')];
+% GPS
+elseif hasGPS && ~hasInSAR
+    saveName = 'invert_GPS';
+elseif hasENU
+    saveName = 'invert_ENU';
+else
+    error('No input data selected: gpsDataFlag=n and insarDataCode is empty.');
 end
 
 % Add models
@@ -165,22 +163,23 @@ end
 % Create output directories
 outputDir = fullfile(outputDir, saveName);
 disp(['Output directory: ', outputDir])
-mkdir(outputDir)
-mkdir([outputDir,'/Figures']) % Create directory for Figures
+if ~exist(outputDir, 'dir')
+    mkdir(fullfile(outputDir,'Figures')) % Create directory for Figures
+end
 
 % Add .mat extension
 saveName = [saveName,'.mat'];
 
 %% Initialise variables
-
 nObs = 0;   % Initialise number of observations variable
 obs  = [];  % Initialise observation points (x,y,z) matrix
 
 %% Ingest InSAR data
-
 % Create colormaps for plotting InSAR data (call third party colormap_cpt.m function and GMT *.cpt files)
-cmap.seismo = colormap_cpt('GMT_seis.cpt', 100);    % GMT 'Seismo' colormap for wrapped data
-cmap.redToBlue = colormap_cpt('polar.cpt', 100);    % Red to Blue colormap for unwrapped data
+% cmap.seismo = colormap_cpt('GMT_seis.cpt', 100);    % GMT 'Seismo' colormap for wrapped data
+% cmap.redToBlue = colormap_cpt('polar.cpt', 100);    % Red to Blue colormap for unwrapped data
+cmap.seismo = crameri("vik");
+cmap.redToBlue = crameri("vik");
 
 % Select InSAR datasets to use from list in input file
 if ~isempty(insarDataCode)
@@ -194,7 +193,7 @@ if ~isempty(insarDataCode)
     % Create subsampled InSAR datasets for inversion
     disp(' ')
     disp('Ingesting InSAR data and performing Quadtree subsampling if requested ...')
-    [insar, obsInsar, nObsInsar] = loadInsarData(selectedInsarData, geo, cmap, useExistingInsar); % Load and subsample InSAR data
+    [insar, obsInsar, nObsInsar] = loadInsarData(selectedInsarData, geo, cmap, useExistingInsar, false, false, true); % Load and subsample InSAR data
     nObs = nObsInsar;   % Add number of InSAR data points to total number of points
     obs  = obsInsar;    % Add InSAR observation points to observation points
 else
@@ -204,7 +203,6 @@ else
 end
 
 %% Ingest GPS data
-
 if gpsDataFlag == 'y'
     if iscell(gps) % in case GPS covers whole time
         gpsinput=gps;
@@ -236,6 +234,40 @@ else
     disp(' ')
     disp 'No GPS datasets will be used in this inversion.'
     gps = [];
+end
+
+%% Ingest ENU data
+if enuDataFlag == 'y'
+    if iscell(enu) % in case GPS covers whole time
+        enuinput=enu;
+    else
+        enuinput{1}=enu;
+    end
+    disp(' ')
+    disp('ENU dataset(s) used in this inversion:')
+    for i=1:length(enuinput)
+        disp(enuinput{i}.dataPath) % display filename of GPS data file
+    end
+    disp(' ')
+    disp('Ingesting ENU data ...')
+    clear enu
+    checksumobsenu=0;
+    for i=1:length(enuinput)     
+        [enu{i}, obsenu, nObsenu] = loadGpsData(enuinput{i}, geo);
+        if checksumobsenu~=0 && sum(obsenu(:))~=checksumobsenu
+            error('the ENU locations are not all identical for different time periods')
+        else 
+            checksumobsenu=sum(obsenu(:));
+        end
+    end
+    disp([num2str(nObsenu), ' ENU sites will be used in this inversion'])
+    enu{1}.ix = [nObs+1:nObs+nObsenu]; % Index of ENU data in observation vector
+    nObs = [nObs + nObsenu];   % Add number of ENU data points to total number of points
+    obs = [obs, obsenu];       % Add ENU observation points to observation points
+else
+    disp(' ')
+    disp 'No ENU datasets will be used in this inversion.'
+    enu = [];
 end
 
 %% Plug-in here any further type of data to ingest (i.e., differential DEMs)
@@ -334,7 +366,7 @@ model = prepareModel(modelInput, invpar, insar, gps, saveName, restartFlag);
 
 %% Run inversion
 
-invResults = runInversion(geo, gps, insar, invpar, model, modelInput, obs, nObs);
+invResults = runInversion(geo, gps, enu, insar, invpar, model, modelInput, obs, nObs);
 
 %% Create *.mat file with final results
 

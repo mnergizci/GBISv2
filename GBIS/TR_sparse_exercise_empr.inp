@@ -25,7 +25,7 @@ geo.boundingBox = [35.75; 38.5; 38.75; 35.75;];  % Coordinates in degrees of upp
 
 insarID = 1;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/021D_20230105_20230306.msk.rng_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/021D_20230105_20230306.msk.rng_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -47,7 +47,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 
 insarID = 2;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/021D_20230105_20230306.msk.azi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/021D_20230105_20230306.msk.azi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/CSK20160614-20160625asc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -69,7 +69,7 @@ insar{insarID}.quadtreeThresh = 0.1^2;  % Quadtree threshold variance in m^2 (e.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 3;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/021D_boi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/021D_boi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/CSK20160614-20160625asc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -90,7 +90,7 @@ insar{insarID}.quadtreeThresh = 0.1^2;  % Quadtree threshold variance in m^2 (e.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 4;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/014A_20230128_20230305.msk.rng_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/014A_20230128_20230305.msk.rng_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -111,7 +111,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 5;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/014A_20230128_20230305.msk.azi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/014A_20230128_20230305.msk.azi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -132,7 +132,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 6;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/014A_boi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/014A_boi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -153,7 +153,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 7;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/116A_20230123_20230324.msk.rng_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/116A_20230123_20230324.msk.rng_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -174,7 +174,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 8;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/116A_20230123_20230324.msk.azi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/116A_20230123_20230324.msk.azi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -195,7 +195,7 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 insarID = 9;                            % InSAR dataset unique identifier
 
-insar{insarID}.dataPath = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/Data/TR_downs_news/116A_boi_rr.mat'; % Path to data file
+insar{insarID}.dataPath = 'D:/GBIS_mn/Example/Data/TR_downs_news/116A_boi_rr.mat'; % Path to data file
 
 % insar{insarID}.plotPath = '/***PATH****/GBIS_V1.2/Example/Data/S1A20160615-20160627dsc_fullres.mat'; % Optional path to data file with different resolution for plotting
 
@@ -215,14 +215,14 @@ insar{insarID}.quadtreeThresh = 0.1^2; % Quadtree threshold variance in m^2 (e.g
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 %% GPS data
-
 gps.dataPath = '/nfs/a1/eemne/GBIS/GBIS_V2.0.1/Example/Data/GPS_data.txt';   % Path to GPS data file
 gps.weight = 1/1;    % Weight of GPS data vs. InSAR data in inversion (e.g., 10/1)
 
-%% Model parameters
+%% ENU data
+enu.dataPath = 'D:/1.Phd_project/1.GBISv2/GBIS/example/downsampled_ENU.txt';   % Path to ENU data file
 
+%% Model parameters
 modelInput.nu = 0.25;     % Poisson's ratio (Shear modulus is set to 1)
 
 % Mogi 'M'
@@ -300,7 +300,7 @@ modelInput.hing{1}.upper = [   200;    200;   7000;   7000;    200;    -0.1;   1
 %
 
 modelInput.mdisloc{1}.ss_ds_op=[true,true,false]; % allow for strike-slip and/or dip-slip and/or opening
-modelInput.mdisloc{1}.patchfile = '/nobackup/mnergizci/new_GBIS/GBIS_V2.0.1/Example/m_total_mode2.mat'; % file containing dike patches in disloc format (10 x n)
+modelInput.mdisloc{1}.patchfile = 'D:\1.Phd_project\1.GBISv2\GBIS\m_total_mode1.mat'; % file containing dike patches in disloc format (10 x n)
 mfunc=load(modelInput.mdisloc{1}.patchfile);
 npatch=size(mfunc.m,2);
 clear mfunc
