@@ -437,7 +437,14 @@ for i=1:1:rows,
         cc = colorbar('location','northoutside');
         title(cc,'Frequency','fontsize',12);
         xlabel_pos = floor(max_new_zero/(n_colors+1)*(n_colors)/100)*100;
-        set(cc,'XTick',[0 xlabel_pos],'xticklabel',num2str([0 xlabel_pos]'))
+        % set(cc,'XTick',[0 xlabel_pos],'xticklabel',num2str([0 xlabel_pos]'))
+        if xlabel_pos > 0
+            set(cc,'XTick',[0 xlabel_pos], ...
+                   'XTickLabel',compose('%g',[0 xlabel_pos]));
+        else
+            set(cc,'XTick',0, ...
+                   'XTickLabel',{'0'});
+        end
 
         freezeColors        
     end

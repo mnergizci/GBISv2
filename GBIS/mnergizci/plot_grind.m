@@ -27,7 +27,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
     load([ldirname, inputfile, '.mat']);
 
       % Number of empty cells at the end of mKeep and pKeep
-    if invpar.nRuns < 10000
+    if invpar.nRuns < 10001
         blankCells = 999;
     else
         blankCells = 9999;
@@ -87,7 +87,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
             op = sum(m_plot(10, :)) ~= 0;
             n_patch = size(m_plot, 2);
             m_keep_orig = invResults.mKeep(:, invResults.PKeep ~= 0);
-%             m_keep_x = (m_keep(model.mIx(i):model.mIx(i+1)-1, end-N+1:end));
+            %m_keep_x = (m_keep(model.mIx(i):model.mIx(i+1)-1, end-N+1:end));
             m_keep = (m_keep_orig(model.mIx(i):model.mIx(i+1)-1, burn_in:end-blankCells));
 
             if abs(m_plot(4, 1)) < 10
@@ -106,7 +106,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
                 m_plot(10, :) = abs(m_plot(8, :));
                 setplotattr(m_plot, chot, climSS, eqs_sw, view_angle, shiftorigin);
                 print('-dpng', [figdir, 'OptimalSS', num2str(i), '.png'], '-r900');
-%                 exportgraphics(gcf, [figdir, 'OptimalSS', num2str(i), '.pdf'], 'ContentType', 'vector');
+                %exportgraphics(gcf, [figdir, 'OptimalSS', num2str(i), '.pdf'], 'ContentType', 'vector');
 
                 %% Median
                 ix = 1;
@@ -114,7 +114,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
                 figure
                 setplotattr(m_plot, chot, climSS, eqs_sw, view_angle, shiftorigin);
                 print('-dpng', [figdir, 'MedianSS', num2str(i), '.png'], '-r900');
-%                 exportgraphics(gcf, [figdir, 'MedianSS', num2str(i), '.pdf'], 'ContentType', 'vector');
+                %exportgraphics(gcf, [figdir, 'MedianSS', num2str(i), '.pdf'], 'ContentType', 'vector');
 
 
 %                 %% Bootstrap for Confidence Interval of the Median

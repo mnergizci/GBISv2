@@ -3,7 +3,7 @@ function plotGpsScatter(xy, vals, cmap, name)
 % vals: Nx1 (m)
 % cmap: struct with field redToBlue (Nx3)
 
-    scatter(xy(:,2), xy(:,3), 40, vals, 'filled'); % 80 = marker size
+    scatter(xy(:,2), xy(:,3), 10, vals, 'filled'); % 80 = marker size
     colormap(cmap.redToBlue);
     c = max(abs([min(vals), max(vals)]));
     caxis([-c c]);

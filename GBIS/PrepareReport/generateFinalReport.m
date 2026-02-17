@@ -221,7 +221,7 @@ fprintf(fidHTML, '%s\r\n', '<H3>Proability exponent plot</H3>');
 fprintf(fidHTML, '%s\r\n', ['<img src="Figures/Probability.png','" alt="HTML5 Icon">']);
         
 %choice = questdlg('Do you want to plot convergence figures?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'No';
+choice = 'Yes';
 switch choice
     case 'Yes'
         iPlot = 0; % Counter for subplots in the single image
@@ -278,7 +278,7 @@ end
 
 %% Plot histograms and optimal values
 %choice = questdlg('Do you want to plot the individual PDFs?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'No';
+choice = 'Yes';
 switch choice
     case 'Yes'
         separatePlotIndex = 1; % Counter for separate plots
