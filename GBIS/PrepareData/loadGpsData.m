@@ -96,7 +96,7 @@ if enuplot
     enu = gps.displacements;   % 3 x N
 
     for k = 1:3
-        name = ['GPS_' compNames{k}];
+        name = [compNames{k}];
 
         f = figure('Position',[1 1 700 700], 'Visible','off');
 

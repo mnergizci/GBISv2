@@ -29,8 +29,8 @@ function generateFinalReport(invResFile,burning,singlePlotFigures)
 
 %%
 if nargin < 2
-    disp('!!!!!!! Not enough input parameters. !!!!!!!!!')
-    return;
+    disp('Burning will selected %10 of the nRuns')
+    burning = 100
 end
 
 if nargin < 3
@@ -54,10 +54,16 @@ warning('off','all')
 
 load(invResFile);   % load results
 
+% If burn_in not provided, use 10% of nRuns
+if burning == 100
+    burning = round(invpar.nRuns * 10/100);
+end
 
 % Create colormaps for plotting InSAR data
-cmap.Seismo = colormap_cpt('GMT_seis.cpt', 100); % GMT Seismo colormap for wrapped interferograms
-cmap.RnB = colormap_cpt('polar.cpt', 100); % Red to Blue colormap for unwrapped interferograms
+% cmap.Seismo = colormap_cpt('GMT_seis.cpt', 100); % GMT Seismo colormap for wrapped interferograms
+% cmap.RnB = colormap_cpt('polar.cpt', 100); % Red to Blue colormap for unwrapped interferograms
+cmap.seismo = crameri("vik");
+cmap.redToBlue = crameri("vik");
 
 nParam = length(invResults.mKeep(:,1)); % Number of model parameters
 
@@ -168,7 +174,7 @@ fprintf(fidHTML, '%s\r\n', '</table> </body>');
 
 % Optional
 %choice = questdlg('Do you want to compare DATA MODEL and RESIDUAL?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'No';
+choice = 'Yes';
 switch choice
     case 'Yes'
         % Plot GPS data, model
@@ -185,6 +191,15 @@ switch choice
         % Plot InSAR data, model, residual
         if exist('insarDataCode')
             plotInSARDataModelResidual(insar, geo, invpar, invResults, modelInput, saveName, fidHTML, 'y',singlePlotFigures)
+        end
+
+        if exist('enu')
+            plotENUDataModel(enu,geo,invpar, invResults, modelInput, saveName, 'y')
+                        
+            % Add image to html report
+            fprintf(fidHTML, '%s\r\n', '<hr>');
+            fprintf(fidHTML, '%s\r\n', '<H3>Comparison GPS Data vs. Model</H3>');
+            fprintf(fidHTML, '%s\r\n', ['<img src="Figures/GPS_Data_Model.png','" alt="HTML5 Icon">']);
         end
     case 'No'
 end
@@ -206,7 +221,7 @@ fprintf(fidHTML, '%s\r\n', '<H3>Proability exponent plot</H3>');
 fprintf(fidHTML, '%s\r\n', ['<img src="Figures/Probability.png','" alt="HTML5 Icon">']);
         
 %choice = questdlg('Do you want to plot convergence figures?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'Yes';
+choice = 'No';
 switch choice
     case 'Yes'
         iPlot = 0; % Counter for subplots in the single image
@@ -215,7 +230,7 @@ switch choice
         % Create a figure for combined plots
         figure('Position', [1, 1, 1200, 1000]);
         % Number of parameters to select
-        numRandomPlots = min(50, nParam-1); % Select 50 or fewer parameters if fewer exist
+        numRandomPlots = min(10, nParam-1); % Select 50 or fewer parameters if fewer exist
         randomIndices = randperm(nParam-1, numRandomPlots); % Randomly select 50 unique indices
 
         for idx = randomIndices % Loop only through the randomly selected indices
@@ -259,17 +274,17 @@ switch choice
         fprintf(fidHTML, '%s\r\n', '<hr>');
         fprintf(fidHTML, '%s\r\n', '<H3>Convergence plots for non-distributed parameters</H3>');
         fprintf(fidHTML, '%s\r\n', ['<img src="Figures/ConvergenceCombined.png" alt="Combined Convergence Plot">']);
-
+end
 
 %% Plot histograms and optimal values
 %choice = questdlg('Do you want to plot the individual PDFs?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'Yes';
+choice = 'No';
 switch choice
     case 'Yes'
         separatePlotIndex = 1; % Counter for separate plots
         
         % Determine random parameters for histogram plotting
-        randomIndices = randperm(nParam-1, min(50, nParam-1)); % Randomly select up to 50 parameters
+        randomIndices = randperm(nParam-1, min(10, nParam-1)); % Randomly select up to 50 parameters
         
         % Create a figure for combined histograms
         combinedFigure = figure('Position', [1, 1, 1200, 1000]);
@@ -332,11 +347,11 @@ switch choice
             fprintf(fidHTML, '%s\r\n', ['<H3>Histogram for Distributed Parameter ', num2str(idx), '</H3>']);
             fprintf(fidHTML, '%s\r\n', ['<img src="Figures/histogram', num2str(idx), '.png" alt="Histogram">']);
         end
-
+end
 
 %% Plot joint probabilities
 %choice = questdlg('Do you want to plot the joint PDFs?', 'Plot?', 'Yes', 'No','Yes');
-choice = 'False';
+choice = 'No';
 switch choice
     case 'Yes'
         
@@ -349,14 +364,7 @@ switch choice
         fprintf(fidHTML, '%s\r\n', '<hr>');
         fprintf(fidHTML, '%s\r\n', '<H3>Joint probabilities</H3>');
         fprintf(fidHTML, '%s\r\n', ['<img src="Figures/JointProbabilities.png','" alt="HTML5 Icon">']);
-        
-    case 'No'
-end
 
-    case 'No'
-end
-
-    case 'No'
 end
 fclose(fidHTML);
 

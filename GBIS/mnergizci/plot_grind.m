@@ -12,7 +12,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
     end
 
     if nargin < 3
-        burn_in = 200000;
+        burn_in = 100;
     end
     
     if nargin < 4
@@ -22,28 +22,55 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
     if nargin < 5
         flat_sw = 'n';
     end
-
+    
     ldirname = [dirname, '/', inputfile, '/'];
     load([ldirname, inputfile, '.mat']);
 
-    N = round(sum(invResults.PKeep ~= 0) / 2);
-
       % Number of empty cells at the end of mKeep and pKeep
     if invpar.nRuns < 10000
-        blankCells = 999; 
+        blankCells = 999;
     else
         blankCells = 9999;
     end  
-    
+
+    % If burn_in not provided, use 10% of nRuns
+    if burn_in == 100
+        burn_in = round(invpar.nRuns * 10/100);
+    end
     
     chot = hot(64);
     chot = flipud(chot(1:end, :));
     chot = chot(1:end-10, :);
-    climOP = [0, 10];
-    climSS = [0, 10];
-    climDS = [-2, 2];
-    climstd = [0, 5];
+    climstd = [0, 2];
     shiftorigin = [0, 0];
+
+    %%%
+    % Find MDLC model index
+    i = find(strcmpi(invpar.model,'MDLC'));
+    
+    if isempty(i)
+        error('No MDLC model found.');
+    end
+    
+    model = invResults.model;
+    m_plot = invResults.optimalmodel{i};
+    
+    n_patch = size(m_plot,2);
+    
+    ix_start = model.mIx(i);
+    % Strike-slip bounds
+    cmin_ss = min(model.lower(ix_start : ix_start+n_patch-1));
+    cmax_ss = max(model.upper(ix_start : ix_start+n_patch-1));
+    max_ss = max(abs([cmin_ss cmax_ss]));
+    climSS = [0 max_ss];
+    
+    % Dip-slip bounds
+    ix_ds = ix_start + n_patch;
+    cmin_ds = min(model.lower(ix_ds : ix_ds+n_patch-1));
+    cmax_ds = max(model.upper(ix_ds : ix_ds+n_patch-1));
+    max_ds = max(abs([cmin_ds cmax_ds]));
+    climDS = [0 max_ds];
+    %%%
 
     figdir = [ldirname, 'Figures/'];
     close all;
@@ -51,6 +78,7 @@ function plot_grind(inputfile, dirname, burn_in, eqs_sw, flat_sw)
     for i = 1:length(invpar.model)
         if strcmpi(invpar.model{i}, 'MDLC')
             m_plot = invResults.optimalmodel{i};
+            
             m_plot([1:3, 6, 7], :) = m_plot([1:3, 6, 7], :) / 1000; % changing to meter to km for illustration!
             m_plot(6, :) = m_plot(6, :) + shiftorigin(1); % reference to end of dike
             m_plot(7, :) = m_plot(7, :) + shiftorigin(2);
