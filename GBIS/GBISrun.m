@@ -253,7 +253,7 @@ if enuDataFlag == 'y'
     clear enu
     checksumobsenu=0;
     for i=1:length(enuinput)     
-        [enu{i}, obsenu, nObsenu] = loadGpsData(enuinput{i}, geo);
+        [enu{i}, obsenu, nObsenu] = loadGpsData(enuinput{i}, geo, 0, 1);
         if checksumobsenu~=0 && sum(obsenu(:))~=checksumobsenu
             error('the ENU locations are not all identical for different time periods')
         else 

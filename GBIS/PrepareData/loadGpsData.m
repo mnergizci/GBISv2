@@ -31,11 +31,11 @@ function [gps, obsGps, nObsGps] = loadGpsData(gps, geo, gpsplot, enuplot)
 % Last update: 8 August, 2018
 
 % ---- Default plotting arguments ----
-if nargin < 4 || isempty(gpsplot)
+if nargin < 3 || isempty(gpsplot)
     gpsplot = false;
 end
 
-if nargin < 5 || isempty(enuplot)
+if nargin < 4 || isempty(enuplot)
     enuplot = false;
 end
 
@@ -80,6 +80,35 @@ if gpsplot
     obsGps(:,end) = []; % remove coordinates of legend
     gps.displacements(:,end) = []; % remove displacements for legend
 end
+
+if enuplot
+
+    figDir = fullfile(outputDir, 'Figures');
+    if ~exist(figDir, 'dir'); mkdir(figDir); end
+
+    % Build xy exactly like InSAR format
+    nGps = size(obsGps,2);
+    xy = [(1:nGps)' , obsGps(1,:)' , obsGps(2,:)'];
+
+    cmap.redToBlue = crameri('vik');
+
+    compNames = {'E','N','U'};
+    enu = gps.displacements;   % 3 x N
+
+    for k = 1:3
+        name = ['GPS_' compNames{k}];
+
+        f = figure('Position',[1 1 700 700], 'Visible','off');
+
+        los = enu(k,:).';   % MUST be Nx1
+        plotGPSscatter(xy, los, cmap, name);
+
+        exportgraphics(f, fullfile(figDir, [name '.png']), 'Resolution', 300);
+        close(f);
+    end
+end
+
+
 
 
 
